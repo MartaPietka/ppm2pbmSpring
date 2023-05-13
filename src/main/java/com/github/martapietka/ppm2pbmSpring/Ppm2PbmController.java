@@ -15,14 +15,14 @@ public class Ppm2PbmController {
     @Autowired
     private ImageService imageService;
 
-    @GetMapping(value = "/image/{imageName}", produces = "image/x-portable-graymap")
+    @GetMapping(value = "/image/{imageName}", produces = "image/png")
     public ResponseEntity getImage(@PathVariable(value = "imageName") String imageName) {
 
         try {
             byte[] imageBytes = imageService.getImage(imageName);
 
             return ResponseEntity.ok()
-                    .contentType(MediaType.parseMediaType("image/x-portable-graymap"))
+                    .contentType(MediaType.parseMediaType("image/png"))
                     .body((imageBytes));
         } catch (IOException e) {
             throw new RuntimeException(e);

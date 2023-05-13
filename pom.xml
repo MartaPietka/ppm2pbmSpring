@@ -61,6 +61,12 @@
 		</dependency>
 
 		<dependency>
+			<groupId>com.twelvemonkeys.imageio</groupId>
+			<artifactId>imageio-pnm</artifactId>
+			<version>3.9.4</version>
+		</dependency>
+
+		<dependency>
 			<groupId>com.github.martapietka</groupId>
 			<artifactId>ppm2pbm</artifactId>
 			<version>1.0-SNAPSHOT</version>
