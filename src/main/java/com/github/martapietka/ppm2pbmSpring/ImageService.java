@@ -1,5 +1,7 @@
 package com.github.martapietka.ppm2pbmSpring;
 
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
@@ -11,7 +13,7 @@ import java.io.IOException;
 @Service
 public class ImageService {
 
-    public byte[] getImage(String imagePath) throws IOException {
+    public Resource getImage(String imagePath) throws IOException {
 
         File imageFile = new File("/Users/martapietka/Downloads/" + imagePath);
 
@@ -23,6 +25,6 @@ public class ImageService {
         var byteArrayOutputStream = new ByteArrayOutputStream();
         ImageIO.write(image, "png", byteArrayOutputStream);
 
-        return byteArrayOutputStream.toByteArray();
+        return new ByteArrayResource(byteArrayOutputStream.toByteArray());
     }
 }
