@@ -20,13 +20,13 @@ public class Ppm2PbmController {
         this.imageService = imageService;
     }
 
-    @GetMapping(value = "/image/{imageName}", produces = "image/x-portable-graymap")
+    @GetMapping(value = "/image/{imageName}", produces = "image/png")
     public ResponseEntity<Resource> getImage(@PathVariable String imageName) {
 
         try {
             Resource imageResource = imageService.getImage(imageName);
             return ResponseEntity.ok()
-                    .contentType(MediaType.parseMediaType("image/x-portable-graymap"))
+                    .contentType(MediaType.parseMediaType("image/png"))
                     .body(imageResource);
         } catch (IOException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error loading image", e);

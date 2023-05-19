@@ -4,10 +4,11 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
+import javax.imageio.ImageIO;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.Files;
 
 @Service
 public class ImageService {
@@ -20,7 +21,10 @@ public class ImageService {
             throw new FileNotFoundException("File not found: " + imagePath);
         }
 
-        byte[] imageBytes = Files.readAllBytes(imageFile.toPath());
-        return new ByteArrayResource(imageBytes);
+        var image = ImageIO.read(imageFile);
+        var byteArrayOutputStream = new ByteArrayOutputStream();
+        ImageIO.write(image, "png", byteArrayOutputStream);
+
+        return new ByteArrayResource(byteArrayOutputStream.toByteArray());
     }
 }
