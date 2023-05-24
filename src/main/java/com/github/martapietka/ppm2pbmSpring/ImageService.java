@@ -5,23 +5,14 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 
 @Service
 public class ImageService {
 
-    public Resource getImage(String imagePath) throws IOException {
+    public Resource getImage(InputStream inputStream) throws IOException {
 
-        File imageFile = new File("/Users/martapietka/Downloads/" + imagePath);
-
-        if (!imageFile.exists()) {
-            throw new FileNotFoundException("File not found: " + imagePath);
-        }
-
-        var image = ImageIO.read(imageFile);
+        var image = ImageIO.read(inputStream);
         var byteArrayOutputStream = new ByteArrayOutputStream();
         ImageIO.write(image, "png", byteArrayOutputStream);
 
