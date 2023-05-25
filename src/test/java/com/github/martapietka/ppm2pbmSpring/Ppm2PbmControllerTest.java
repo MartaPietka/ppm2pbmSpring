@@ -9,14 +9,14 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.MediaType;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.InputStream;
 
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -35,14 +35,20 @@ class Ppm2PbmControllerTest {
     public void shouldReturnCorrectImage() throws Exception {
 
         String imageName = "3x3.ppm";
-        byte[] expectedBytes = Files.readAllBytes(Paths.get("src/test/resources/" + imageName));
-        String expectedContentType = "image/x-portable-graymap";
+        String expectedContentType = "image/png";
 
-        given(imageService.getImage(anyString())).willReturn(new ByteArrayResource(expectedBytes));
+        InputStream inputStream = getClass().getResourceAsStream("/" + imageName);
+        assert inputStream != null;
+        byte[] expectedBytes = inputStream.readAllBytes();
 
-        this.mockMvc.perform(get("/image/{imageName}", imageName))
+        given(imageService.getImage(any(InputStream.class))).willReturn(new ByteArrayResource(expectedBytes));
+
+        this.mockMvc.perform(multipart("/convert")
+                .file(new MockMultipartFile("file", imageName, "image/png", expectedBytes)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.parseMediaType(expectedContentType)))
                 .andExpect(content().bytes(expectedBytes));
+
+        inputStream.close();
     }
 }
