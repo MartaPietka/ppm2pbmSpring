@@ -1,9 +1,6 @@
 package com.github.martapietka.ppm2pbmSpring;
 
 import com.github.martapietka.ppm2pbm.InvalidImageException;
-import com.github.martapietka.ppm2pbm.PpmConverter;
-import com.github.martapietka.ppm2pbm.PpmToPbmConverter;
-import com.github.martapietka.ppm2pbm.RgbToGrayscaleByAverageConverter;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -12,10 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 
 @RestController
 public class Ppm2PbmController {
@@ -26,18 +20,11 @@ public class Ppm2PbmController {
         this.imageService = imageService;
     }
 
-    @PostMapping("/convert")
+    @PostMapping(value = "/convert", produces = "image/png")
     public ResponseEntity<Resource> convertPpmToPbm(@RequestParam("file")MultipartFile file) {
 
         try {
-            InputStream inputStream = file.getInputStream();
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-
-            PpmConverter ppmConverter = new PpmToPbmConverter(128, new RgbToGrayscaleByAverageConverter());
-            ppmConverter.convert(inputStream, outputStream);
-
-            InputStream convertedInputStream = new ByteArrayInputStream(outputStream.toByteArray());
-            Resource imageResource = imageService.getImage(convertedInputStream);
+            Resource imageResource = imageService.getImage(imageService.getConvertedInputStream(file));
 
             return ResponseEntity.ok()
                     .contentType(MediaType.parseMediaType("image/png"))
