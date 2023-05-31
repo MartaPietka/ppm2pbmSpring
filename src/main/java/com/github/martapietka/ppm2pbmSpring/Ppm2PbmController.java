@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 @RestController
 public class Ppm2PbmController {
@@ -24,7 +25,8 @@ public class Ppm2PbmController {
     public ResponseEntity<Resource> convertPpmToPbm(@RequestParam("file")MultipartFile file) {
 
         try {
-            Resource imageResource = imageService.getImage(imageService.getConvertedInputStream(file));
+            InputStream inputStream = file.getInputStream();
+            Resource imageResource = imageService.getImage(imageService.getConvertedInputStream(inputStream));
 
             return ResponseEntity.ok()
                     .contentType(MediaType.parseMediaType("image/png"))

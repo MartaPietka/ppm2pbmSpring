@@ -47,7 +47,7 @@ class Ppm2PbmControllerTest {
 
             byte[] expectedBytes = inputStream.readAllBytes();
 
-            given(imageService.getImage(any(InputStream.class))).willReturn(new ByteArrayResource(expectedBytes));
+            given(imageService.getImage(imageService.getConvertedInputStream(any(InputStream.class)))).willReturn(new ByteArrayResource(expectedBytes));
 
             this.mockMvc.perform(multipart("/convert")
                             .file(new MockMultipartFile("file", imageName, "image/png", expectedBytes)))

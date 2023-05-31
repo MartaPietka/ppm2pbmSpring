@@ -7,7 +7,6 @@ import com.github.martapietka.ppm2pbm.RgbToGrayscaleByAverageConverter;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import java.io.*;
@@ -15,9 +14,8 @@ import java.io.*;
 @Service
 public class ImageService {
 
-    public InputStream getConvertedInputStream(MultipartFile file) throws IOException, InvalidImageException {
+    public InputStream getConvertedInputStream(InputStream inputStream) throws IOException, InvalidImageException {
 
-        InputStream inputStream = file.getInputStream();
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
         PpmConverter ppmConverter = new PpmToPbmConverter(128, new RgbToGrayscaleByAverageConverter());
