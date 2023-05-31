@@ -1,27 +1,32 @@
 package com.github.martapietka.ppm2pbmSpring;
 
+import com.github.martapietka.ppm2pbm.InvalidImageException;
+import com.github.martapietka.ppm2pbm.PpmConverter;
+import com.github.martapietka.ppm2pbm.PpmToPbmConverter;
+import com.github.martapietka.ppm2pbm.RgbToGrayscaleByAverageConverter;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 
 @Service
 public class ImageService {
 
-    public Resource getImage(String imagePath) throws IOException {
+    public InputStream getConvertedInputStream(InputStream inputStream) throws IOException, InvalidImageException {
 
-        File imageFile = new File("/Users/martapietka/Downloads/" + imagePath);
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
-        if (!imageFile.exists()) {
-            throw new FileNotFoundException("File not found: " + imagePath);
-        }
+        PpmConverter ppmConverter = new PpmToPbmConverter(128, new RgbToGrayscaleByAverageConverter());
+        ppmConverter.convert(inputStream, outputStream);
 
-        var image = ImageIO.read(imageFile);
+        return new ByteArrayInputStream(outputStream.toByteArray());
+    }
+
+    public Resource getImage(InputStream inputStream) throws IOException {
+
+        var image = ImageIO.read(inputStream);
         var byteArrayOutputStream = new ByteArrayOutputStream();
         ImageIO.write(image, "png", byteArrayOutputStream);
 
